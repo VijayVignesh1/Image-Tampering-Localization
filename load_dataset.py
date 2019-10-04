@@ -18,7 +18,6 @@ class DatasetLoad(Dataset):
                                         std=[0.229, 0.224, 0.225])
         self.dataset_size=len(self.values)
     def __getitem__(self,i):
-        #print('In train')
         img=torch.FloatTensor(self.imgs[i]//255.)
         img=self.normalize(img)
         value=torch.LongTensor(self.values[i])
