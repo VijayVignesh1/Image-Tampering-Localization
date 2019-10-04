@@ -11,9 +11,25 @@ import random
 from dice_loss import dice_coeff
 from torch.autograd import Variable
 from dodge import img_dodge
+import argparse
+parser = argparse.ArgumentParser()
+parser.add_argument('--checkpoint_class',default='checkpoint_class.pth.tar', help='Checkpoint of the classifier')
+parser.add_argument('--checkpoint',default='checkpoint.pth.tar', help='Checkpoint of the localizer')
+parser.add_argument('--image',default='train/val/cat.12025.jpg', help='Image name with the path')
+parser.add_argument('--tamper',default=True, type=bool,help='Tamper image? (True/False)')
+parser.add_argument('--side',default='shuffle', help='Which side to tamper? (Options: left_bottom,left_top, right_bottom, right_top, center)')
+args = parser.parse_args()
+checkpoint_class=args.checkpoint_class
+checkpoint=args.checkpoint
+image=args.image
+tamper=args.tamper
+side=args.side
 classes=('Normal','Manipulated')
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
 def test(checkpoint_class,checkpoint,image_name,tamper=False,side='center'):
+    sides=['left_top','left_bottom','right_top','right_bottom','center']
+    if side=='shuffle':
+        side=sides[random.randint(0,4)]
     checkpoint=torch.load(checkpoint)
     encoder=checkpoint['encoder']
     checkpoint_class=torch.load(checkpoint_class)
@@ -49,5 +65,4 @@ def test(checkpoint_class,checkpoint,image_name,tamper=False,side='center'):
     cv2.imshow('',predicted_mask)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-test('checkpoint_class.pth.tar','checkpoint.pth.tar','train/val/cat.12025.jpg',True,'right_top')
+test(checkpoint_class,checkpoint,image,tamper,side)
