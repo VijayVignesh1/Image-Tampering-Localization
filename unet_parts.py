@@ -1,8 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-
 class double_conv(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(double_conv, self).__init__()
@@ -14,22 +12,16 @@ class double_conv(nn.Module):
             nn.BatchNorm2d(out_ch),
             nn.ReLU(inplace=True)
         )
-
     def forward(self, x):
         x = self.conv(x)
         return x
-
-
 class inconv(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(inconv, self).__init__()
         self.conv = double_conv(in_ch, out_ch)
-
     def forward(self, x):
         x = self.conv(x)
         return x
-
-
 class down(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(down, self).__init__()
@@ -40,8 +32,6 @@ class down(nn.Module):
     def forward(self, x):
         x = self.mpconv(x)
         return x
-
-
 class up(nn.Module):
     def __init__(self, in_ch, out_ch, bilinear=True):
         super(up, self).__init__()
@@ -50,7 +40,6 @@ class up(nn.Module):
         else:
             self.up = nn.ConvTranspose2d(in_ch//2, in_ch//2, 2, stride=2)
         self.conv = double_conv(in_ch, out_ch)
-
     def forward(self, x1, x2):
         x1 = self.up(x1)
         diffY = x2.size()[2] - x1.size()[2]
@@ -61,8 +50,6 @@ class up(nn.Module):
         x = torch.cat([x2, x1], dim=1)
         x = self.conv(x)
         return x
-
-
 class outconv(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(outconv, self).__init__()
