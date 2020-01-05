@@ -1,4 +1,4 @@
-# SPi-Assignment
+# Image Tampering Localization
 Finding if an image is tampered and if tampered, the tampered section is localized.
 1.Run "python data_process.py" initially to create two h5py files (This is for classification process), one for training and the other for validation.
   In data_process.py, I take 12000 cat images, tamper it manually. The process of Dodging is used for manipulation, though it can be extended to other processes as well. Different parts of the images are tampered. The size of the training data becomes 24000.
