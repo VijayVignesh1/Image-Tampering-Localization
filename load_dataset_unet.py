@@ -4,6 +4,9 @@ import h5py
 import os
 from torchvision.transforms import transforms
 
+# Load dataset for training and validation
+# Data is processed in data_process_unet.py
+
 class DatasetLoad(Dataset):
     def __init__(self,type=None):
         if type=='train':

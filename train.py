@@ -4,12 +4,14 @@ import torch
 import torch.optim as optim
 from load_dataset import *
 from encoder import *
-from scipy.misc import imread, imresize
+from PIL import Image
 import numpy as np
 import cv2
 import random
 from dodge import img_dodge
 global classes
+
+# Function to save the states as checkpoint 
 def save_checkpoint(file_name,epochs,encoder):
     state={'epochs':epochs,'encoder':encoder}
     torch.save(state,file_name)
@@ -17,10 +19,14 @@ learning_rate=1e-4
 epochs=4
 batch_size=10
 start_epoch=0
-checkpoint='checkpoint_class.pth.tar'  ### To train from scratch, comment line and uncomment next line.
-#checkpoint=None
+# checkpoint='checkpoint_class.pth.tar'  # To train from checkpoint uncomment.
+checkpoint=None # To train from scratch, uncomment
 acc_avg = AverageMeter()
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Load the training and validation data
+train_len=len(DatasetLoad(type='train'))
+
 train_loader = torch.utils.data.DataLoader(
                                             DatasetLoad(type='train'),
                                             batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True
@@ -30,20 +36,25 @@ val_loader = torch.utils.data.DataLoader(
                                             batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True
                                             )
 print('Data Loaded Succesfully..')
+
 if checkpoint==None:
     encoder=Encoder()
 else:
     check=torch.load(checkpoint)
     encoder=check['encoder']
     start_epoch=check['epochs'] + 1
+
 classes=('Normal','Manipulated')
 criterion=nn.CrossEntropyLoss().to(device)
 optimizer=optim.Adam(encoder.parameters(),lr=learning_rate)
 encoder=encoder.to(device)
 
+# Start Training
 for epoch in range(start_epoch,epochs):
     running_loss = 0.0
+    print("-------------------")
     print("Epoch %d"%(epoch))
+    print("-------------------")
     for i,data in enumerate(train_loader):
         encoder.train()
         images,values=data
@@ -56,10 +67,10 @@ for epoch in range(start_epoch,epochs):
         optimizer.step()
         running_loss += loss.item()
         if i%100==0:
-            print("Loss: %.3f"%(running_loss/100))
+            print("Loss %d / %d : %.3f"%(i, train_len/batch_size, running_loss/100))
             running_loss=0.0
             
-
+# Run Validation
 print("Entering Validation..")
 for i, data in enumerate(val_loader):
     encoder.eval()  
@@ -69,10 +80,7 @@ for i, data in enumerate(val_loader):
     scores=encoder(images)
     values=torch.max(values,1)[1]
     _,scores=torch.max(scores, dim=1)
-    # print("scores:",scores)
-    # print("values:",values)
     result=torch.sum(values==scores)
-    #acc=accuracy_quick(encoder,images,values)
     acc = (result * 100.0 / len(values))
     acc_avg.update(acc)
     if i%100==0:
@@ -83,11 +91,13 @@ print("Final Accuracy: ",acc_avg.avg)
 print("Saving Checkpoint..")
 save_checkpoint('checkpoint_class.pth.tar',epochs,encoder)
 
+# Test on image function. Seems redundant (see test.py)
 def test(checkpoint,image_name,tamper=False,side='center'):
     checkpoint=torch.load(checkpoint)
     encoder=checkpoint['encoder']
-    img=imread(image_name)
-    img=imresize(img,(256,256))
+    img=Image.open(image_name)
+    img=img.resize((256,256))
+    img=np.array(img)[:,:,::-1]
     if tamper==True:    
         img,mask=img_dodge(img,side)
     imgs=img

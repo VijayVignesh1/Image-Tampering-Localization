@@ -3,6 +3,10 @@ from torch.utils.data import Dataset
 import h5py
 import os
 from torchvision.transforms import transforms
+
+# Load the training and the validation dataset
+# The dataset is prepared in data_process.py
+
 class DatasetLoad(Dataset):
     def __init__(self,type=None):
         if type=='train':

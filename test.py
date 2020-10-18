@@ -4,7 +4,7 @@ import torch
 import torch.optim as optim
 from load_dataset import *
 from encoder import *
-from scipy.misc import imread, imresize
+from PIL import Image
 import numpy as np
 import cv2
 import random
@@ -12,6 +12,7 @@ from dice_loss import dice_coeff
 from torch.autograd import Variable
 from dodge import img_dodge
 import argparse
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--checkpoint_class',default='checkpoint_class.pth.tar', help='Checkpoint of the classifier')
 parser.add_argument('--checkpoint',default='checkpoint.pth.tar', help='Checkpoint of the localizer')
@@ -24,18 +25,28 @@ checkpoint=args.checkpoint
 image=args.image
 tamper=args.tamper
 side=args.side
+
 classes=('Normal','Manipulated')
 device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Function for testing on an image given the two checkpoints (one for tampering detection and another
+# for tampering localization) 
 def test(checkpoint_class,checkpoint,image_name,tamper=False,side='center'):
     sides=['left_top','left_bottom','right_top','right_bottom','center']
+
+    # if side==shuffle, pick random part of image to tamper
     if side=='shuffle':
         side=sides[random.randint(0,4)]
+    
+    # Load checkpoints
     checkpoint=torch.load(checkpoint)
     encoder=checkpoint['encoder']
     checkpoint_class=torch.load(checkpoint_class)
     encoder_class=checkpoint_class['encoder']
-    img=imread(image_name)
-    img=imresize(img,(256,256))
+
+    img=Image.open(image_name)
+    img=img.resize((256,256))
+    img=np.array(img)[:,:,::-1] 
     if tamper==True:    
         img_tamp,mask=img_dodge(img,side)
     else:
@@ -53,6 +64,7 @@ def test(checkpoint_class,checkpoint,image_name,tamper=False,side='center'):
     img_tamp=img_tamp.unsqueeze(0)    
     img_tamp=img_tamp.to(device)
     output=encoder_class(img_tamp)
+
     if classes[torch.max(output,1)[1]]=='Manipulated':
         score=encoder(img_tamp)
     else:
@@ -65,4 +77,5 @@ def test(checkpoint_class,checkpoint,image_name,tamper=False,side='center'):
     cv2.imshow('',predicted_mask)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
 test(checkpoint_class,checkpoint,image,tamper,side)

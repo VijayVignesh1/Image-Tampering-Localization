@@ -2,6 +2,8 @@ import torch
 from torchvision.models import vgg16
 from torch import nn
 import torch.nn.functional as F
+# Encoder using existing architecture
+# Uncomment and comment the next Enoder function to VGGNet architecture
 """
 class Encoder(nn.Module):
     def __init__(self):
@@ -21,6 +23,9 @@ class Encoder(nn.Module):
         out=self.vgg(x)
         return out
 """
+
+# Custom architecture using conv, maxpooling and linear layers
+
 class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
@@ -39,6 +44,7 @@ class Encoder(nn.Module):
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
         return x
+
 
 class AverageMeter(object):
     """

@@ -3,25 +3,7 @@ from torchvision.models import vgg16
 from torch import nn
 import torch.nn.functional as F
 from unet_parts import *
-"""
-class Encoder(nn.Module):
-    def __init__(self):
-        super(Encoder, self).__init__()
-        self.vgg=vgg16(pretrained=False)
-        modules=list(self.vgg.children())[:-1]
-        modules.append(nn.Linear(in_features=25088, out_features=4096, bias=True))
-        modules.append(nn.ReLU(inplace=True))
-        modules.append(nn.Dropout(p=0.5, inplace=False))
-        modules.append(nn.Linear(in_features=4096, out_features=2048, bias=True))
-        modules.append(nn.ReLU(inplace=True))
-        modules.append(nn.Linear(4096,2))
-        modules.append(nn.Dropout(p=0.5, inplace=False))
-        modules.append(nn.Linear(in_features=4096, out_features=2, bias=True))
-        self.vgg=nn.Sequential(*modules)
-    def forward(self,x):
-        out=self.vgg(x)
-        return out
-"""
+
 class AverageMeter(object):
     """
     Keeps track of most recent, average, sum, and count of a metric.
@@ -41,6 +23,8 @@ class AverageMeter(object):
         self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
+
+# Unet architecture for localizing the tampered portion of the image
 
 class UNet(nn.Module):
     def __init__(self, n_channels, n_classes):

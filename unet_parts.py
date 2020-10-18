@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+# Implements two concolutional operations one after the other
 class double_conv(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(double_conv, self).__init__()
@@ -15,6 +17,8 @@ class double_conv(nn.Module):
     def forward(self, x):
         x = self.conv(x)
         return x
+
+# First conv layer. Uses the previous double_conv class
 class inconv(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(inconv, self).__init__()
@@ -22,6 +26,9 @@ class inconv(nn.Module):
     def forward(self, x):
         x = self.conv(x)
         return x
+
+# Used in downsampling the previous layer using maxpooling and 
+# implements double_conv after that
 class down(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(down, self).__init__()
@@ -32,6 +39,8 @@ class down(nn.Module):
     def forward(self, x):
         x = self.mpconv(x)
         return x
+
+# Upsamples the previous layer in order to get back the image mask.
 class up(nn.Module):
     def __init__(self, in_ch, out_ch, bilinear=True):
         super(up, self).__init__()
@@ -50,6 +59,8 @@ class up(nn.Module):
         x = torch.cat([x2, x1], dim=1)
         x = self.conv(x)
         return x
+
+# Used to get 1 channel-ed output which is the mask
 class outconv(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(outconv, self).__init__()

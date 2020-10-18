@@ -1,9 +1,12 @@
-from scipy.misc import imread, imresize
 import numpy as np
 import cv2
 import random
+# Apply Dodge function to a given image using the given mask
 def dodgeV2(image, mask):
     return cv2.divide(image, 255-mask, scale=256)
+
+# Crop a random rectangle on an image and apply dodge function on that region
+# to mimic tampering over that region
 def img_dodge(img,side='center'):
     if side=='left_top':
         x1=random.randint(0,50)
@@ -36,8 +39,10 @@ def img_dodge(img,side='center'):
     img_blur = cv2.GaussianBlur(img_crop, ksize=(7, 7),sigmaX=0, sigmaY=0)
     img_blend=dodgeV2(img_crop,img_blur)
     img[x1:x2,y1:y2]=img_blend
+
     img_new=np.zeros((img.shape[0],img.shape[1]),np.uint8)
     rect=np.ones((x2-x1,y2-y1))
     rect[:]=255
     img_new[x1:x2,y1:y2]=rect
+    
     return img,img_new

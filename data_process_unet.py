@@ -2,7 +2,7 @@ from PIL import Image
 import os
 import h5py
 from tqdm import tqdm
-from scipy.misc import imread,imresize
+from PIL import Image
 import glob
 import numpy as np
 import random
@@ -13,6 +13,8 @@ img_path_val='train/val/cat*'
 all_files_train=glob.glob(img_path_train)
 all_files_val=glob.glob(img_path_val)
 j=0
+# Iterate through images and tamper random portions of images
+# and create the corresponding label as well for training.
 with h5py.File(os.path.join('UNET_TRAIN.h5py'),'a') as h:
     imgs=h.create_dataset('images',(2500,3,256,256),dtype='uint8')
     masks=h.create_dataset('masks',(2500,256,256),dtype='uint8')
@@ -27,18 +29,19 @@ with h5py.File(os.path.join('UNET_TRAIN.h5py'),'a') as h:
             side='left_bottom'
         else:
             side='center'
-        img=cv2.imread(file_name)
+        img=Image.open(file_name)
+        img=np.array(img)[:,:,::-1] 
         img_tamp,mask=img_dodge(img,side)
         img_tamp=img_tamp.transpose(2,0,1)
         assert img_tamp.shape==(3,256,256)
         assert np.max(img_tamp)<=255
-        #print(mask.shape)
         assert mask.shape==(256,256)
         assert np.max(mask)<=255
         imgs[j]=img_tamp
         masks[j]=mask
         j+=1
 
+# Do the same for validation dataset
 j=0
 with h5py.File(os.path.join('UNET_VAL.h5py'),'a') as h:
     imgs=h.create_dataset('images',(1000,3,256,256),dtype='uint8')
