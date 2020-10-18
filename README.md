@@ -27,4 +27,8 @@ python train_unet.py
 ```.bash
 python test.py --help
 ```
-
+-------------------------------------
+<p align="center">
+:star: Happiness should be a function without any parameters :star: <br> <br>
+<b>Happy Coding</b> :exclamation: :exclamation:
+</p>
