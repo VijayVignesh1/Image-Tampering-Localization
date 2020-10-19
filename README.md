@@ -10,7 +10,7 @@ Model is trained on Cat-Dog Images, which are tampered automatically using the d
 python data_process.py
 ```
 Creates two h5py files (This is for classification process), one for training and the other for validation. <br>
-<b>Note: <b> <br>
+<b>Note: </b> <br>
 In data_process.py, 12000 cat images are taken and tampered. The process of Dodging is used for manipulation, though it can be extended to other processes as well. Different parts of the images are tampered. The size of the training data becomes 24000. <br>
 Then, both the tampered and Normal images are saved, along with the appropriate labels in a h5py file. This is repeated for validation dataset.
 
@@ -18,7 +18,7 @@ Then, both the tampered and Normal images are saved, along with the appropriate 
 python data_process_unet.py
 ```
 Creates two h5py files (This is for localization process), one for training and the other for validation.
-<b>Note:<b> <br>
+<b>Note:</b> <br>
 1000 cat images are taken and tampered (dodging). The tampered images with the corresponding masks are stored in the h5py files. <br> <br>
 
 ### 2. Training The Models
@@ -31,7 +31,7 @@ This loads the dataset and trains the classification model and saves the checkpo
 ```.bash
 python train_unet.py
 ```
-<b>Note:<b><br>
+<b>Note:</b><br>
 This loads the dataset and trains the localization model (UNet) and saves the checkpoint. I have already trained the model for a few epochs.
 
 ## Additional Notes:
@@ -48,6 +48,7 @@ python test.py --help
 
 Different types of Image tampering processes can be added and trained. :wink:<br>
 Go ahead..pull it, train it and have fun. :smile:
+
 -------------------------------------
 <p align="center">
 :star: Happiness should be a function without any parameters :star: <br> <br>
