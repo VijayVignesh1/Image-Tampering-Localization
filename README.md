@@ -4,10 +4,10 @@ Finding if an image is tampered and if tampered, the tampered section is localiz
 Model is trained on Cat-Dog Images, which are tampered automatically using the dodge function. <br>
 
 ## Requirements
-torch >= 1.1.0 <br>
-torchvision >= 0.3.0 <br>
-opencv>= 4.2.0 <br>
-PIL >= 7.2.0 <br>
+* torch >= 1.1.0 <br>
+* torchvision >= 0.3.0 <br>
+* opencv>= 4.2.0 <br>
+* PIL >= 7.2.0 <br>
 
 ## Steps To Run
 
