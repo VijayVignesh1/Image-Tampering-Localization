@@ -1,6 +1,6 @@
 # Image Tampering Localization
 
-Finding if an image is tampered and if tampered, the tampered section is localized. :sunglasses: :sunglasses:<br>
+Detecting Tampered Images and localizing the tampered portions using U-Net architecture. :sunglasses: :sunglasses:<br>
 Model is trained on Cat-Dog Images, which are tampered automatically using the dodge function. <br>
 
 ## Requirements
