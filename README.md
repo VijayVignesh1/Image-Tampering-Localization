@@ -7,7 +7,7 @@ Model is trained on Cat-Dog Images, which are tampered automatically using the d
 * torch >= 1.1.0 <br>
 * torchvision >= 0.3.0 <br>
 * opencv>= 4.2.0 <br>
-* PIL >= 7.2.0 <br>
+* pillow >= 7.2.0 <br>
 
 ## Steps To Run
 
