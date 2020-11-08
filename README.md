@@ -53,10 +53,10 @@ python test.py --help
 ![](gif/gif-2.gif)
 
 Different types of Image tampering processes can be added and trained. :wink:<br>
-Go ahead..pull it, train it and have fun. :smile:
+Go ahead..pull it, train it and have fun. And don't forget to :star:<b><i>star</i></b>:star: the repo, if you like it.:smile:
 
 -------------------------------------
 <p align="center">
-:star: Happiness should be a function without any parameters :star: <br> <br>
+:star2: Happiness should be a function without any parameters :star2: <br> <br>
 <b>Happy Coding</b> :exclamation: :exclamation:
 </p>
